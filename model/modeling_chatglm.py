@@ -1016,8 +1016,10 @@ class ChatGLMForConditionalGeneration(ChatGLMPreTrainedModel):
                 history.append({"role": "assistant", "metadata": metadata, "content": content})
                 if history[0]["role"] == "system" and "tools" in history[0]:
                     content = "\n".join(content.split("\n")[1:-1])
+
                     def tool_call(**kwargs):
                         return kwargs
+
                     parameters = eval(content)
                     content = {"name": metadata.strip(), "parameters": parameters}
                 else:
@@ -1043,12 +1045,13 @@ class ChatGLMForConditionalGeneration(ChatGLMPreTrainedModel):
         outputs = outputs.tolist()[0][len(inputs["input_ids"][0]):-1]
         response = tokenizer.decode(outputs)
         history.append({"role": role, "content": query})
+        # post process
         response, history = self.process_response(response, history)
         return response, history
 
     @torch.inference_mode()
     def stream_chat(self, tokenizer, query: str, history: List[Dict] = None, role: str = "user",
-                    past_key_values=None,max_length: int = 8192, do_sample=True, top_p=0.8, temperature=0.8,
+                    past_key_values=None, max_length: int = 8192, do_sample=True, top_p=0.8, temperature=0.8,
                     logits_processor=None, return_past_key_values=False, **kwargs):
         if history is None:
             history = []

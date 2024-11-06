@@ -551,11 +551,11 @@ def main(
 
         output_dir = ft_config.training_args.output_dir
 
-        # resume from latest checkpoint
+        # resume from the latest checkpoint
         if auto_resume_from_checkpoint.upper() == "YES":
             dirlist = os.listdir(output_dir)
             checkpoint_sn = 0
-            # get latest checkpoint
+            # get the latest checkpoint
             for checkpoint_str in dirlist:
                 if checkpoint_str.find("eckpoint") > 0 and checkpoint_str.find("tmp") == -1:
                     checkpoint = int(checkpoint_str.replace("checkpoint-", ""))
@@ -566,7 +566,7 @@ def main(
             else:
                 trainer.train()
         else:
-            # resume from specific checkpoint
+            # resume from the specific checkpoint
             if auto_resume_from_checkpoint.isdigit() and int(auto_resume_from_checkpoint) > 0:
                 do_rf_checkpoint(auto_resume_from_checkpoint)
             else:
